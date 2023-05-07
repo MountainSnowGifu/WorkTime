@@ -1,0 +1,16 @@
+﻿<Window x:Class="WorkTime.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title.Value}" Height="720" Width="1280">
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="TestView" Width="100" Command="{Binding NavigateCommand}" CommandParameter="TestView"/>
+                <Button Content="WorkView" Width="100" Command="{Binding NavigateCommand}" CommandParameter="WorkView"/>
+            </StackPanel>
+            <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        </StackPanel>
+    </Grid>
+</Window>

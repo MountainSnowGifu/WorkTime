@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="WorkTime.Views.TestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <StackPanel>
+            <Button Content="Update" Command="{Binding TestCommand}"/>
+            <Button Content="Update" Command="{Binding TestCommand2}"/>
+            <Button Content="TableCreate" Command="{Binding TestCommand3}"/>
+            <Button Content="Save" Command="{Binding TestCommand4}"/>
+            <Button Content="test5" Command="{Binding TestCommand5}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

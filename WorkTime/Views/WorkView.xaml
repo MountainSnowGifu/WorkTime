@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="WorkTime.Views.WorkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <StackPanel>
+            <Label Content="{Binding SelectedOperation.Value.OperationId}"/>
+            <Label Content="{Binding SelectedOperation.Value.WorkContentId}"/>
+            <Label Content="{Binding SelectedOperation.Value.WorkContent}"/>
+            <ListView Margin="10" Name="lvw" ItemsSource="{Binding Operations.Value}" SelectedItem="{Binding SelectedOperation.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding IsDone}" Header="IsDone" />
+                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding OperationId}" Header="OperationId" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkContentId}" Header="WorkContentId" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkContent}" Header="WorkContent" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding Contract}" Header="Contract" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkOrder}" Header="WorkOrder" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StackPanel>
+                <Button Content="Start" Command="{Binding StartCommand}"/>
+                <Button Content="Next" Command="{Binding NextCommand}"/>
+                <Button Content="Wait" Command="{Binding WaitCommand}"/>
+                <Button Content="WaitEnd" Command="{Binding WaitEndCommand}"/>
+                <Label Content="{Binding ProgressStatus.Value}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
