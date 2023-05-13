@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Service
 {
     public interface IWorkRecord
     {
-        DateTime WorkStartDateTime { get; set; }
-        DateTime WorkEndDateTime { get; set; }
+        WorkStartDateTime WorkStartDateTime { get; }
+        WorkEndDateTime WorkEndDateTime { get; }
         TimeSpan WorkTimeSeconds { get; }
     }
 }

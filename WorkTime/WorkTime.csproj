@@ -81,6 +81,24 @@
     <Compile Include="WorkRecord\Service\IWorkRecord.cs" />
     <Compile Include="WorkRecord\Service\OperationService.cs" />
     <Compile Include="WorkRecord\Service\TestOperationService.cs" />
+    <Compile Include="WorkRecord\ValueObject\Contract.cs" />
+    <Compile Include="WorkRecord\ValueObject\DifferenceReason.cs" />
+    <Compile Include="WorkRecord\ValueObject\OperationId.cs" />
+    <Compile Include="WorkRecord\ValueObject\ResultMachineName.cs" />
+    <Compile Include="WorkRecord\ValueObject\ResultUserName.cs" />
+    <Compile Include="WorkRecord\ValueObject\ResultWorkerName.cs" />
+    <Compile Include="WorkRecord\ValueObject\Section.cs" />
+    <Compile Include="WorkRecord\ValueObject\SEG.cs" />
+    <Compile Include="WorkRecord\ValueObject\SFX.cs" />
+    <Compile Include="WorkRecord\ValueObject\Stage.cs" />
+    <Compile Include="WorkRecord\ValueObject\ValueObject.cs" />
+    <Compile Include="WorkRecord\ValueObject\WaitingTimeReason.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkContent.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkContentId.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkEndDateTime.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkerName.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkOrder.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkStartDateTime.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -140,7 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Exception\" />
-    <Folder Include="WorkRecord\ValueObject\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

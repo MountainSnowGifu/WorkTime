@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Entities
 {
@@ -11,13 +12,13 @@ namespace WorkTime.WorkRecord.Entities
     {
         public TestUser(string resultWorkerName, string resultUserName, string resultNachineName)
         {
-            ResultWorkerName = resultWorkerName;
-            ResultUserName = resultUserName;
-            ResultMachineName = resultNachineName;
+            ResultWorkerName = new ResultWorkerName(resultWorkerName);
+            ResultUserName = new ResultUserName(resultUserName);
+            ResultMachineName = new ResultMachineName(resultNachineName);
         }
 
-        public string ResultWorkerName { get; set; }
-        public string ResultUserName { get; set; }
-        public string ResultMachineName { get; set; }
+        public ResultWorkerName ResultWorkerName { get; }
+        public ResultUserName ResultUserName { get; }
+        public ResultMachineName ResultMachineName { get; }
     }
 }

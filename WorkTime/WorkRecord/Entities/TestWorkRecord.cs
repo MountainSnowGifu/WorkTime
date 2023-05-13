@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Entities
 {
@@ -13,17 +14,17 @@ namespace WorkTime.WorkRecord.Entities
                                          DateTime workStartDateTime,
                                          DateTime workEndDateTime)
         {
-            WorkStartDateTime = workStartDateTime;
-            WorkEndDateTime = workEndDateTime;
+            WorkStartDateTime = new WorkStartDateTime(workStartDateTime);
+            WorkEndDateTime = new WorkEndDateTime(workEndDateTime);
         }
 
-        public DateTime WorkStartDateTime { get; set; }
-        public DateTime WorkEndDateTime { get; set; }
+        public WorkStartDateTime WorkStartDateTime { get; }
+        public WorkEndDateTime WorkEndDateTime { get; }
         public TimeSpan WorkTimeSeconds
         {
             get
             {
-                return WorkEndDateTime - WorkStartDateTime;
+                return WorkEndDateTime.Value - WorkStartDateTime.Value;
             }
         }
     }

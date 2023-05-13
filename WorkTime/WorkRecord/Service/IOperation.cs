@@ -4,23 +4,24 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Service
 {
     public interface IOperation : INotifyPropertyChanged
     {
-        int OperationId { get; set; }
-        string WorkContentId { get; set; }
-        string WorkContent { get; set; }
-        TimeSpan StandardWorkTimeSeconds { get; set; }
-        TimeSpan TargetWorkTimeSeconds { get; set; }
-        string Contract { get; set; }
-        string WorkOrder { get; set; }
-        string SEG { get; set; }
-        string Stage { get; set; }
-        string SFX { get; set; }
-        string Section { get; set; }
-        string WorkerName { get; set; }
+        OperationId OperationId { get; }
+        WorkContentId WorkContentId { get; }
+        WorkContent WorkContent { get; }
+        TimeSpan StandardWorkTimeSeconds { get; }
+        TimeSpan TargetWorkTimeSeconds { get; }
+        Contract Contract { get; }
+        WorkOrder WorkOrder { get; }
+        SEG SEG { get; }
+        Stage Stage { get; }
+        SFX SFX { get; }
+        Section Section { get; }
+        WorkerName WorkerName { get; }
         bool IsDone { get; set; }
     }
 }

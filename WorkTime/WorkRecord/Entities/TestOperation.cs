@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Entities
 {
@@ -26,33 +27,33 @@ namespace WorkTime.WorkRecord.Entities
                                         string section,
                                         string workerName)
         {
-            OperationId = operationId;
-            WorkContentId = workContentId;
-            WorkContent = workContent;
+            OperationId = new OperationId(operationId);
+            WorkContentId = new WorkContentId(workContentId);
+            WorkContent = new WorkContent(workContent);
             StandardWorkTimeSeconds = standardWorkTimeSeconds;
             TargetWorkTimeSeconds = targetWorkTimeSeconds;
-            Contract = contract;
-            WorkOrder = workOrder;
-            SEG = seg;
-            Stage = stage;
-            SFX = sfx;
-            Section = section;
-            WorkerName = workerName;
+            Contract = new Contract(contract);
+            WorkOrder = new WorkOrder(workOrder);
+            SEG = new SEG(seg);
+            Stage = new Stage(stage);
+            SFX = new SFX(sfx);
+            Section = new Section(section);
+            WorkerName = new WorkerName(workerName);
             IsDone = false;
         }
 
-        public int OperationId { get; set; }
-        public string WorkContentId { get; set; }
-        public string WorkContent { get; set; }
-        public TimeSpan StandardWorkTimeSeconds { get; set; }
-        public TimeSpan TargetWorkTimeSeconds { get; set; }
-        public string Contract { get; set; }
-        public string WorkOrder { get; set; }
-        public string SEG { get; set; }
-        public string Stage { get; set; }
-        public string SFX { get; set; }
-        public string Section { get; set; }
-        public string WorkerName { get; set; }
+        public OperationId OperationId { get; }
+        public WorkContentId WorkContentId { get; }
+        public WorkContent WorkContent { get; }
+        public TimeSpan StandardWorkTimeSeconds { get; }
+        public TimeSpan TargetWorkTimeSeconds { get; }
+        public Contract Contract { get; }
+        public WorkOrder WorkOrder { get; }
+        public SEG SEG { get; }
+        public Stage Stage { get; }
+        public SFX SFX { get; }
+        public Section Section { get; }
+        public WorkerName WorkerName { get; }
 
         private bool _isDone;
         public bool IsDone

@@ -110,18 +110,18 @@ do update
             foreach(var operation in operations)
             {
                 parameters.Clear();
-                parameters.Add(new SQLiteParameter("@operation_id", operation.OperationId));
-                parameters.Add(new SQLiteParameter("@work_content_id", operation.WorkContentId));
-                parameters.Add(new SQLiteParameter("@work_content", operation.WorkContent));
+                parameters.Add(new SQLiteParameter("@operation_id", operation.OperationId.Value));
+                parameters.Add(new SQLiteParameter("@work_content_id", operation.WorkContentId.Value));
+                parameters.Add(new SQLiteParameter("@work_content", operation.WorkContent.Value));
                 parameters.Add(new SQLiteParameter("@standard_work_time_seconds", operation.StandardWorkTimeSeconds.TotalSeconds));
                 parameters.Add(new SQLiteParameter("@target_work_time_seconds", operation.TargetWorkTimeSeconds.TotalSeconds));
-                parameters.Add(new SQLiteParameter("@contract", operation.Contract));
-                parameters.Add(new SQLiteParameter("@work_order", operation.WorkOrder));
-                parameters.Add(new SQLiteParameter("@seg", operation.SEG));
-                parameters.Add(new SQLiteParameter("@stage", operation.Stage));
-                parameters.Add(new SQLiteParameter("@sfx", operation.SFX));
-                parameters.Add(new SQLiteParameter("@section", operation.Section));
-                parameters.Add(new SQLiteParameter("@worker_name", operation.WorkerName));
+                parameters.Add(new SQLiteParameter("@contract", operation.Contract.Value));
+                parameters.Add(new SQLiteParameter("@work_order", operation.WorkOrder.Value));
+                parameters.Add(new SQLiteParameter("@seg", operation.SEG.Value));
+                parameters.Add(new SQLiteParameter("@stage", operation.Stage.Value));
+                parameters.Add(new SQLiteParameter("@sfx", operation.SFX.Value));
+                parameters.Add(new SQLiteParameter("@section", operation.Section.Value));
+                parameters.Add(new SQLiteParameter("@worker_name", operation.WorkerName.Value));
                 SQLiteHelper.Execute(sql, parameters.ToArray());
             }
 
@@ -195,30 +195,30 @@ values
             foreach (var result in operationResults)
             {
                 parameters.Clear();
-                parameters.Add(new SQLiteParameter("@operation_id", result.Operation.OperationId));
-                parameters.Add(new SQLiteParameter("@work_content_id", result.Operation.WorkContentId));
-                parameters.Add(new SQLiteParameter("@work_content", result.Operation.WorkContent));
+                parameters.Add(new SQLiteParameter("@operation_id", result.Operation.OperationId.Value));
+                parameters.Add(new SQLiteParameter("@work_content_id", result.Operation.WorkContentId.Value));
+                parameters.Add(new SQLiteParameter("@work_content", result.Operation.WorkContent.Value));
                 parameters.Add(new SQLiteParameter("@standard_work_time_seconds", result.Operation.StandardWorkTimeSeconds.TotalSeconds));
                 parameters.Add(new SQLiteParameter("@target_work_time_seconds", result.Operation.TargetWorkTimeSeconds.TotalSeconds));
-                parameters.Add(new SQLiteParameter("@contract", result.Operation.Contract));
-                parameters.Add(new SQLiteParameter("@work_order", result.Operation.WorkOrder));
-                parameters.Add(new SQLiteParameter("@seg", result.Operation.SEG));
-                parameters.Add(new SQLiteParameter("@stage", result.Operation.Stage));
-                parameters.Add(new SQLiteParameter("@sfx", result.Operation.SFX));
-                parameters.Add(new SQLiteParameter("@section", result.Operation.Section));
-                parameters.Add(new SQLiteParameter("@worker_name", result.Operation.WorkerName));
+                parameters.Add(new SQLiteParameter("@contract", result.Operation.Contract.Value));
+                parameters.Add(new SQLiteParameter("@work_order", result.Operation.WorkOrder.Value));
+                parameters.Add(new SQLiteParameter("@seg", result.Operation.SEG.Value));
+                parameters.Add(new SQLiteParameter("@stage", result.Operation.Stage.Value));
+                parameters.Add(new SQLiteParameter("@sfx", result.Operation.SFX.Value));
+                parameters.Add(new SQLiteParameter("@section", result.Operation.Section.Value));
+                parameters.Add(new SQLiteParameter("@worker_name", result.Operation.WorkerName.Value));
 
-                parameters.Add(new SQLiteParameter("@result_worker_name", result.OperatingUser.ResultWorkerName));
-                parameters.Add(new SQLiteParameter("@result_user_name", result.OperatingUser.ResultUserName));
-                parameters.Add(new SQLiteParameter("@result_machine_name", result.OperatingUser.ResultMachineName));
-                parameters.Add(new SQLiteParameter("@work_start_datetime", result.WorkRecord.WorkStartDateTime));
-                parameters.Add(new SQLiteParameter("@work_end_datetime", result.WorkRecord.WorkEndDateTime));
+                parameters.Add(new SQLiteParameter("@result_worker_name", result.OperatingUser.ResultWorkerName.Value));
+                parameters.Add(new SQLiteParameter("@result_user_name", result.OperatingUser.ResultUserName.Value));
+                parameters.Add(new SQLiteParameter("@result_machine_name", result.OperatingUser.ResultMachineName.Value));
+                parameters.Add(new SQLiteParameter("@work_start_datetime", result.WorkRecord.WorkStartDateTime.Value));
+                parameters.Add(new SQLiteParameter("@work_end_datetime", result.WorkRecord.WorkEndDateTime.Value));
                 parameters.Add(new SQLiteParameter("@work_time_seconds", result.WorkRecord.WorkTimeSeconds));
                 parameters.Add(new SQLiteParameter("@is_completed", result.IsCompleted));
                 parameters.Add(new SQLiteParameter("@is_remote_saved", result.IsRemoteSaved));
-                parameters.Add(new SQLiteParameter("@difference_reason", result.DifferenceReason));
+                parameters.Add(new SQLiteParameter("@difference_reason", result.DifferenceReason.Value));
                 parameters.Add(new SQLiteParameter("@is_waiting_time", result.IsWaitingTime));
-                parameters.Add(new SQLiteParameter("@waiting_time_reason", result.WaitingTimeReason));
+                parameters.Add(new SQLiteParameter("@waiting_time_reason", result.WaitingTimeReason.Value));
 
                 SQLiteHelper.Execute(sql, parameters.ToArray());
             }

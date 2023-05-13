@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Entities
 {
@@ -17,19 +18,19 @@ namespace WorkTime.WorkRecord.Entities
             IsCompleted = isCompleted;
             IsLocalSaved = false;
             IsRemoteSaved = false;
-            DifferenceReason = differenceReason;
+            DifferenceReason = new DifferenceReason(differenceReason);
             IsWaitingTime = isWaitingTime;
-            WaitingTimeReason = waitingTimeReason;
+            WaitingTimeReason = new WaitingTimeReason(waitingTimeReason);
         }
 
-        public IOperation Operation { get; set; }
-        public IWorkRecord WorkRecord { get; set; }
-        public IOperatingUser OperatingUser { get; set; }
-        public bool IsCompleted { get; set; }
+        public IOperation Operation { get; }
+        public IWorkRecord WorkRecord { get; }
+        public IOperatingUser OperatingUser { get; }
+        public bool IsCompleted { get; }
         public bool IsLocalSaved { get; set; }
-        public bool IsRemoteSaved { get; set; }
-        public string DifferenceReason { get; set; }
-        public bool IsWaitingTime { get; set; }
-        public string WaitingTimeReason { get; set; }
+        public bool IsRemoteSaved { get; }
+        public DifferenceReason DifferenceReason { get; }
+        public bool IsWaitingTime { get; }
+        public WaitingTimeReason WaitingTimeReason { get; }
     }
 }
