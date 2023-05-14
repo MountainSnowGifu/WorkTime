@@ -30,7 +30,7 @@ namespace WorkTime.ViewModels
             var operationOrders = _operationsRepositoryRemote.GetOperationOrders();
             _operationsRepositoryLocal.SaveOperationOrders(operationOrders[0]);
 
-            SelectedOperationOrder.Value = operationOrders[0];
+            SelectedOperationOrder.Value = _operationsRepositoryLocal.GetOperationOrders()[0];
 
             _operationService = new OperationService(SelectedOperationOrder.Value, _operatingUser);
 

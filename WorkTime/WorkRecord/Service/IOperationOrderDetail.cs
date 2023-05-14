@@ -14,12 +14,18 @@ namespace WorkTime.WorkRecord.Service
         OperationOrderDetailId RemotoOperationOrderDetailId { get; }
         WorkContentId WorkContentId { get; }
         WorkContent WorkContent { get; }
+        ImportantPoints ImportantPoints { get; }
+        ImportantPointsImage ImportantPointsImage { get; }
         SEG SEG { get; }
         Stage Stage { get; }
         SFX SFX { get; }
         Section Section { get; }
+        SqkIndex SqkIndex { get; }
+        GenUnit GenUnit { get; }
         TimeSpan StandardWorkTimeSeconds { get; }
         TimeSpan TargetWorkTimeSeconds { get; }
         bool IsDone { get; set; }
+        bool CanSkip { get; }
+        bool IsSkip { get; set; }
     }
 }

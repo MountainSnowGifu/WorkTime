@@ -56,9 +56,7 @@ namespace WorkTime.ViewModels
                 SQLiteHelper.Execute(sql, parameters.ToArray());
                 SQLiteHelper.Execute(sql, parameters2.ToArray());
                 scope.Complete();
-                
-
-
+               
             }
         }
 
@@ -98,7 +96,17 @@ CREATE TABLE IF NOT EXISTS
     ,work_order TEXT NOT NULL
     ,worker_name TEXT
     ,affiliation_code TEXT
-    ,is_done TEXT
+
+    ,scheduled_workdate TEXT
+    ,is_responsible_calling INTEGER
+    ,responsible_call_reason TEXT
+    ,is_waiting INTEGER
+    ,waitingtime_reason TEXT
+    ,is_group_working INTEGER
+    ,group_working_order TEXT
+    ,Is_working INTEGER
+
+    ,is_done INTEGER
 )
 ";
             SQLiteHelper.Execute(sql, parameters.ToArray());
@@ -127,7 +135,13 @@ CREATE TABLE IF NOT EXISTS
     ,section TEXT
     ,standard_worktime_seconds TEXT
     ,target_worktime_seconds TEXT
+    ,important_points TEXT
+    ,important_points_image TEXT
+    ,sqk_index TEXT
+    ,gen_unit TEXT
     ,is_done INTEGER
+    ,can_skip INTEGER
+    ,is_skip INTEGER
 )
 ";
             SQLiteHelper.Execute(sql, parameters.ToArray());

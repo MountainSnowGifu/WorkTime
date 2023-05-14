@@ -16,21 +16,23 @@ namespace WorkTime.SQLite
         {
             var sql = @"
 select
-    OPERATIONS.[operation_id],
-    OPERATIONS.[operation_order_id],
-    OPERATIONS.[work_content_id],
-    OPERATIONS.[work_content],
-    OPERATIONS.[standard_work_time_seconds],
-    OPERATIONS.[target_work_time_seconds],
-    OPERATIONS.[contract],
-    OPERATIONS.[work_order],
-    OPERATIONS.[seg],
-    OPERATIONS.[stage],
-    OPERATIONS.[sfx],
-    OPERATIONS.[section],
-    OPERATIONS.[worker_name]
+    LOCAL_OPERATION_ORDERS.[remote_operation_order_id],
+    LOCAL_OPERATION_ORDERS.[contract],
+    LOCAL_OPERATION_ORDERS.[work_order],
+    LOCAL_OPERATION_ORDERS.[worker_name],
+    LOCAL_OPERATION_ORDERS.[affiliation_code],
+    LOCAL_OPERATION_ORDERS.[scheduled_workdate],
+    LOCAL_OPERATION_ORDERS.[is_responsible_calling],
+    LOCAL_OPERATION_ORDERS.[responsible_call_reason],
+    LOCAL_OPERATION_ORDERS.[is_waiting],
+    LOCAL_OPERATION_ORDERS.[waitingtime_reason],
+    LOCAL_OPERATION_ORDERS.[is_group_working],
+    LOCAL_OPERATION_ORDERS.[group_working_order],
+    LOCAL_OPERATION_ORDERS.[Is_working],
+    LOCAL_OPERATION_ORDERS.[is_done]
+
 from
-    OPERATIONS
+    LOCAL_OPERATION_ORDERS
 ;
 ";
             var parameters = new List<SQLiteParameter>();
@@ -41,17 +43,21 @@ from
                                             parameters.ToArray(),
                                             reader =>
                                             {
-                                                //list.Add(new TestOperation(Convert.ToInt32(reader["operation_order_id"]),
-                                                //                                        Convert.ToString(reader["contract"]),
-                                                //                                        Convert.ToString(reader["work_order"]),
-                                                //                                        Convert.ToString(reader["seg"]),
-                                                //                                        Convert.ToString(reader["stage"]),
-                                                //                                        Convert.ToString(reader["sfx"]),
-                                                //                                        Convert.ToString(reader["section"]),
-                                                //                                        Convert.ToString(reader["worker_name"]),
-                                                //                                        null,
-                                                //                                        1,
-                                                //                                        false));
+                                                list.Add(new TestOperationOrder(Convert.ToInt32(reader["remote_operation_order_id"]),
+                                                                                                Convert.ToString(reader["contract"]),
+                                                                                                Convert.ToString(reader["work_order"]),
+                                                                                                Convert.ToString(reader["worker_name"]),
+                                                                                                null,
+                                                                                                Convert.ToInt32(reader["affiliation_code"]),
+                                                                                                Convert.ToDateTime(reader["scheduled_workdate"]),
+                                                                                                Convert.ToBoolean(reader["is_responsible_calling"]),
+                                                                                                Convert.ToString(reader["responsible_call_reason"]),
+                                                                                                Convert.ToBoolean(reader["is_waiting"]),
+                                                                                                Convert.ToString(reader["waitingtime_reason"]),
+                                                                                                Convert.ToBoolean(reader["is_group_working"]),
+                                                                                                Convert.ToString(reader["group_working_order"]),
+                                                                                                Convert.ToBoolean(reader["Is_working"]),
+                                                                                                Convert.ToBoolean(reader["is_done"])));
                                             });
 
             return list;
@@ -67,6 +73,16 @@ insert into
         work_order,
         worker_name,
         affiliation_code,
+
+        scheduled_workdate,
+        is_responsible_calling,
+        responsible_call_reason,
+        is_waiting,
+        waitingtime_reason,
+        is_group_working,
+        group_working_order,
+        Is_working,
+
         is_done
     )
 values
@@ -76,6 +92,16 @@ values
         @work_order,
         @worker_name,
         @affiliation_code,
+
+        @scheduled_workdate,
+        @is_responsible_calling,
+        @responsible_call_reason,
+        @is_waiting,
+        @waitingtime_reason,
+        @is_group_working,
+        @group_working_order,
+        @Is_working,
+
         @is_done
     ) on conflict(remote_operation_order_id) do
 update
@@ -85,6 +111,16 @@ set
     work_order = @work_order,
     worker_name = @worker_name,
     affiliation_code = @affiliation_code,
+
+    scheduled_workdate = @scheduled_workdate,
+    is_responsible_calling = @is_responsible_calling,
+    responsible_call_reason = @responsible_call_reason,
+    is_waiting = @is_waiting,
+    waitingtime_reason = @waitingtime_reason,
+    is_group_working = @is_group_working,
+    group_working_order = @group_working_order,
+    Is_working = @Is_working,
+
     is_done = @is_done
 ;";
 
@@ -95,6 +131,16 @@ set
             parameters.Add(new SQLiteParameter("@work_order", operationOrder.WorkOrder.Value));
             parameters.Add(new SQLiteParameter("@worker_name", operationOrder.WorkerName.Value));
             parameters.Add(new SQLiteParameter("@affiliation_code", operationOrder.AffiliationCode.Value));
+
+            parameters.Add(new SQLiteParameter("@scheduled_workdate", operationOrder.ScheduledWorkDate.Value));
+            parameters.Add(new SQLiteParameter("@is_responsible_calling", operationOrder.IsResponsibleCalling));
+            parameters.Add(new SQLiteParameter("@responsible_call_reason", operationOrder.ResponsibleCallReason.Value));
+            parameters.Add(new SQLiteParameter("@is_waiting", operationOrder.IsWaiting));
+            parameters.Add(new SQLiteParameter("@waitingtime_reason", operationOrder.WaitingTimeReason.Value));
+            parameters.Add(new SQLiteParameter("@is_group_working", operationOrder.IsGroupWorking));
+            parameters.Add(new SQLiteParameter("@group_working_order", operationOrder.GroupWorkingOrder.Value));
+            parameters.Add(new SQLiteParameter("@Is_working", operationOrder.IsWorking));
+
             parameters.Add(new SQLiteParameter("@is_done", operationOrder.IsDone));
 
             SQLiteHelper.Execute(sql, parameters.ToArray());
@@ -117,7 +163,14 @@ insert into
         section,
         standard_worktime_seconds,
         target_worktime_seconds,
-        is_done
+        is_done,
+        can_skip,
+        is_skip,
+
+        important_points,
+        important_points_image,
+        sqk_index,
+        gen_unit
     )
 values
     (
@@ -131,7 +184,15 @@ values
         @section,
         @standard_worktime_seconds,
         @target_worktime_seconds,
-        @is_done
+        @is_done,
+        @can_skip,
+        @is_skip,
+
+        @important_points,
+        @important_points_image,
+        @sqk_index,
+        @gen_unit
+
     ) on conflict(remote_operation_order_detail_id) do
 update
 set
@@ -144,7 +205,14 @@ set
     section = @section,
     standard_worktime_seconds = @standard_worktime_seconds,
     target_worktime_seconds = @target_worktime_seconds,
-    is_done = @is_done
+    is_done = @is_done,
+    can_skip = @can_skip,
+    is_skip = @is_skip,
+
+    important_points = @important_points,
+    important_points_image = @important_points_image,
+    sqk_index = @sqk_index,
+    gen_unit = @gen_unit
 ;";
 
             var parameters = new List<SQLiteParameter>();
@@ -163,6 +231,14 @@ set
                 parameters.Add(new SQLiteParameter("@standard_worktime_seconds", val.StandardWorkTimeSeconds.TotalSeconds));
                 parameters.Add(new SQLiteParameter("@target_worktime_seconds", val.TargetWorkTimeSeconds.TotalSeconds));
                 parameters.Add(new SQLiteParameter("@is_done", val.IsDone));
+                parameters.Add(new SQLiteParameter("@can_skip", val.CanSkip));
+                parameters.Add(new SQLiteParameter("@is_skip", val.IsSkip));
+
+                parameters.Add(new SQLiteParameter("@important_points", val.ImportantPoints.Value));
+                parameters.Add(new SQLiteParameter("@important_points_image", val.ImportantPointsImage.Value));
+                parameters.Add(new SQLiteParameter("@sqk_index", val.SqkIndex.Value));
+                parameters.Add(new SQLiteParameter("@gen_unit", val.GenUnit.Value));
+
                 SQLiteHelper.Execute(sql, parameters.ToArray());
             }   
         }

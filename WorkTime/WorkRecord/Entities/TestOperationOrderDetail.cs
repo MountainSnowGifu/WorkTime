@@ -21,9 +21,15 @@ namespace WorkTime.WorkRecord.Entities
                                                        string stage,
                                                        string sfx,
                                                        string section,
+                                                       string importantPoints,
+                                                       string importantPointsImage,
+                                                       string sqkIndex,
+                                                       string genUnit,
                                                        TimeSpan standardWorkTimeSeconds,
                                                        TimeSpan targetWorkTimeSeconds,
-                                                       bool isDone)
+                                                       bool isDone,
+                                                       bool canSkip,
+                                                       bool isSkip)
         {
             RemotoOperationOrderDetailId = new OperationOrderDetailId(remotoOperationOrderDetailId);
             RemotoOperationOrderId = new OperationOrderId(remotoOperationOrderId);
@@ -33,9 +39,15 @@ namespace WorkTime.WorkRecord.Entities
             Stage = new Stage(stage);
             SFX = new SFX(sfx);
             Section = new Section(section);
+            ImportantPoints = new ImportantPoints(importantPoints);
+            ImportantPointsImage = new ImportantPointsImage(importantPointsImage);
+            SqkIndex = new SqkIndex(sqkIndex);
+            GenUnit = new GenUnit(genUnit);
             StandardWorkTimeSeconds = standardWorkTimeSeconds;
             TargetWorkTimeSeconds = targetWorkTimeSeconds;
             IsDone = isDone;
+            CanSkip = canSkip;
+            IsSkip = isSkip;
         }
 
         public OperationOrderId RemotoOperationOrderId { get; }
@@ -46,8 +58,16 @@ namespace WorkTime.WorkRecord.Entities
         public Stage Stage { get; }
         public SFX SFX { get; }
         public Section Section { get; }
+        public ImportantPoints ImportantPoints { get; }
+        public ImportantPointsImage ImportantPointsImage { get; }
+        public SqkIndex SqkIndex { get; }
+        public GenUnit GenUnit { get; }
+
         public TimeSpan StandardWorkTimeSeconds { get; }
         public TimeSpan TargetWorkTimeSeconds { get; }
+
+        public bool CanSkip { get; }
+        public bool IsSkip { get; set; }
 
         private bool _isDone;
         public bool IsDone
