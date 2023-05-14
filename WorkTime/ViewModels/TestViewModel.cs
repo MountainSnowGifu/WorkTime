@@ -9,6 +9,7 @@ using System.Linq;
 using System.Transactions;
 using WorkTime.Repository;
 using WorkTime.SQLite;
+using WorkTime.SQLServer;
 using WorkTime.WorkRecord.Entities;
 using WorkTime.WorkRecord.Service;
 
@@ -16,25 +17,29 @@ namespace WorkTime.ViewModels
 {
     public class TestViewModel : BindableBase
     {
-        private IOperationsRepository _operationsRepository;
+        private IOperationsRepository _operationsRepositoryLocal;
+        private IOperationsRepository _operationsRepositoryRemote;
         public ReactiveProperty<string> Title { get; private set; } = new ReactiveProperty<string>("Title");
-        public ReactiveProperty<ObservableCollection<IOperation>> Operations { get; private set; }
-       = new ReactiveProperty<ObservableCollection<IOperation>>();
+        public ReactiveProperty<ObservableCollection<IOperationOrder>> OperationOrders { get; private set; }
+       = new ReactiveProperty<ObservableCollection<IOperationOrder>>();
 
         public ReactiveCommand TestCommand { get; private set; } = new ReactiveCommand();
         public ReactiveCommand TestCommand2 { get; private set; } = new ReactiveCommand();
         public ReactiveCommand TestCommand3 { get; private set; } = new ReactiveCommand();
         public ReactiveCommand TestCommand4 { get; private set; } = new ReactiveCommand();
         public ReactiveCommand TestCommand5 { get; private set; } = new ReactiveCommand();
+        public ReactiveCommand TestCommand6 { get; private set; } = new ReactiveCommand();
 
         public TestViewModel()
         {
-            _operationsRepository = new OperationsSQLite();
+            _operationsRepositoryLocal = new OperationsSQLite();
+            _operationsRepositoryRemote = new OperationsSQLServer();
             TestCommand.Subscribe(_ => TestCommandExecute());
             TestCommand2.Subscribe(_ => Test2CommandExecute());
             TestCommand3.Subscribe(_ => Test3CommandExecute());
             TestCommand4.Subscribe(_ => Test4CommandExecute());
             TestCommand5.Subscribe(_ => Test5CommandExecute());
+            TestCommand6.Subscribe(_ => Test6CommandExecute());
         }
 
         private void TestCommandExecute()
@@ -79,27 +84,50 @@ namespace WorkTime.ViewModels
         {
             var parameters = new List<SQLiteParameter>();
             var sql = @"
- DROP TABLE OPERATIONS;
+ DROP TABLE LOCAL_OPERATION_ORDERS;
 ";
 
             SQLiteHelper.Execute(sql, parameters.ToArray());
 
             sql = @"
 CREATE TABLE IF NOT EXISTS
-    OPERATIONS
+    LOCAL_OPERATION_ORDERS
 (
-    operation_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    remote_operation_order_id INTEGER NOT NULL UNIQUE
+    ,contract TEXT NOT NULL
+    ,work_order TEXT NOT NULL
+    ,worker_name TEXT
+    ,affiliation_code TEXT
+    ,is_done TEXT
+)
+";
+            SQLiteHelper.Execute(sql, parameters.ToArray());
+        }
+
+        private void Test6CommandExecute()
+        {
+            var parameters = new List<SQLiteParameter>();
+            var sql = @"
+ DROP TABLE LOCAL_OPERATION_ORDER_DETAILS;
+";
+
+            SQLiteHelper.Execute(sql, parameters.ToArray());
+
+            sql = @"
+CREATE TABLE IF NOT EXISTS
+    LOCAL_OPERATION_ORDER_DETAILS
+(
+    remote_operation_order_detail_id INTEGER NOT NULL UNIQUE
+    ,remote_operation_order_id INTEGER NOT NULL
     ,work_content_id TEXT NOT NULL
     ,work_content TEXT NOT NULL
-    ,standard_work_time_seconds INTEGER
-    ,target_work_time_seconds INTEGER
-    ,contract TEXT
-    ,work_order TEXT
     ,seg TEXT
     ,stage TEXT
     ,sfx TEXT
-    ,section TEXT 
-    ,worker_name TEXT 
+    ,section TEXT
+    ,standard_worktime_seconds TEXT
+    ,target_worktime_seconds TEXT
+    ,is_done INTEGER
 )
 ";
             SQLiteHelper.Execute(sql, parameters.ToArray());
@@ -108,8 +136,9 @@ CREATE TABLE IF NOT EXISTS
         private void Test4CommandExecute()
         {
             //Operations.Value = new ObservableCollection<IOperation>(_operationsRepository.GetOperations());
-            Operations.Value = new ObservableCollection<IOperation>(TestOperationService.GetOperations());
-            _operationsRepository.SaveOperations(Operations.Value.ToList());
+            OperationOrders.Value = new ObservableCollection<IOperationOrder>(TestOperationService.GetOperations());
+            _operationsRepositoryRemote.SaveOperationOrders(OperationOrders.Value[0]);
+            //_operationsRepositoryLocal.SaveOperations(OperationOrders.Value.ToList());
         }
 
         private void Test5CommandExecute()
@@ -126,7 +155,8 @@ CREATE TABLE IF NOT EXISTS
     OPERATION_RESULTS
 (
     operation_result_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-    ,operation_id TEXT NOT NULL
+    ,operation_order_id INTEGER NOT NULL
+    ,operation_order_detail_id INTEGER NOT NULL
     ,work_content_id TEXT NOT NULL
     ,work_content TEXT NOT NULL
     ,standard_work_time_seconds INTEGER

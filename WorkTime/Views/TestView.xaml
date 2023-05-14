@@ -7,9 +7,10 @@
         <StackPanel>
             <Button Content="Update" Command="{Binding TestCommand}"/>
             <Button Content="Update" Command="{Binding TestCommand2}"/>
-            <Button Content="TableCreate" Command="{Binding TestCommand3}"/>
-            <Button Content="Save" Command="{Binding TestCommand4}"/>
+            <Button Content="test3" Command="{Binding TestCommand3}"/>
+            <Button Content="test4" Command="{Binding TestCommand4}"/>
             <Button Content="test5" Command="{Binding TestCommand5}"/>
+            <Button Content="test6" Command="{Binding TestCommand6}"/>
         </StackPanel>
     </Grid>
 </UserControl>

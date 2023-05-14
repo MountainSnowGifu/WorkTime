@@ -7,39 +7,51 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using WorkTime.Repository;
 using WorkTime.SQLite;
+using WorkTime.SQLServer;
 using WorkTime.WorkRecord.Entities;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.ViewModels
 {
     public class WorkViewModel : BindableBase
     {
-        private IOperationsRepository _operationsRepository;
-        private OperationService _operationService;
+        private IOperationsRepository _operationsRepositoryLocal;
+        private IOperationsRepository _operationsRepositoryRemote;
+        private IOperationService _operationService;
         private IOperatingUser _operatingUser;
 
         public WorkViewModel()
         {
-            _operationsRepository = new OperationsSQLite();
+            _operationsRepositoryLocal = new OperationsSQLite();
+            _operationsRepositoryRemote = new OperationsSQLServer();
             _operatingUser = new TestUser("akira", "test", "test");
-            _operationService = new OperationService(_operationsRepository.GetOperations(), _operatingUser);
+
+            var operationOrders = _operationsRepositoryRemote.GetOperationOrders();
+            _operationsRepositoryLocal.SaveOperationOrders(operationOrders[0]);
+
+            SelectedOperationOrder.Value = operationOrders[0];
+
+            _operationService = new OperationService(SelectedOperationOrder.Value, _operatingUser);
 
             StartCommand.Subscribe(_ => StartCommandExecute());
             NextCommand.Subscribe(_ => NextCommandExecute());
             WaitCommand.Subscribe(_ => WaitCommandExecute());
             WaitEndCommand.Subscribe(_ => WaitEndCommandExecute());
 
-            SelectedOperation.Subscribe(_ => SelectedOperationChangeExecute());
-
+            SelectedOperationOrderDetails.Subscribe(_ => SelectedOperationChangeExecute());
         }
 
         public ReactiveProperty<string> Title { get; private set; } = new ReactiveProperty<string>("Title");
 
-        public ReactiveProperty<ObservableCollection<IOperation>> Operations { get; private set; }
-        = new ReactiveProperty<ObservableCollection<IOperation>>();
+        public ReactiveProperty<IOperationOrder> SelectedOperationOrder { get; private set; }
+       = new ReactiveProperty<IOperationOrder>();
 
-        public ReactiveProperty<IOperation> SelectedOperation { get; private set; }
-        = new ReactiveProperty<IOperation>();
+        public ReactiveProperty<ObservableCollection<IOperationOrderDetail>> OperationOrderDetails { get; private set; }
+        = new ReactiveProperty<ObservableCollection<IOperationOrderDetail>>();
+
+        public ReactiveProperty<IOperationOrderDetail> SelectedOperationOrderDetails { get; private set; }
+        = new ReactiveProperty<IOperationOrderDetail>();
 
         public ReactiveProperty<ObservableCollection<IOperationResult>> OperationResults { get; private set; }
         = new ReactiveProperty<ObservableCollection<IOperationResult>>();
@@ -53,19 +65,19 @@ namespace WorkTime.ViewModels
 
         private void StartCommandExecute()
         {
-            Operations.Value = new ObservableCollection<IOperation>(_operationService.Operations);
-            SelectedOperation.Value = _operationService.SelectedOperation;
+            OperationOrderDetails.Value = new ObservableCollection<IOperationOrderDetail>(_operationService.OperationOrderDetails);
+            SelectedOperationOrderDetails.Value = _operationService.SelectedOperationOrderDetail;
         }
 
         private void NextCommandExecute()
         {
-            if (SelectedOperation.Value == null)
+            if (SelectedOperationOrderDetails.Value == null)
             {
                 return;
             }
 
             _operationService.OnCompletedNext();
-            SelectedOperation.Value = _operationService.SelectedOperation;
+            SelectedOperationOrderDetails.Value = _operationService.SelectedOperationOrderDetail;
             ProgressStatus.Value = _operationService.ProgressStatus;
         }
 
@@ -76,7 +88,7 @@ namespace WorkTime.ViewModels
 
         private void WaitEndCommandExecute()
         {
-            _operationService.WaitingEnd("test");
+            _operationService.WaitingEnd(new WaitingTimeReason("test"));
         }
 
         private void SelectedOperationChangeExecute()
@@ -87,7 +99,8 @@ namespace WorkTime.ViewModels
             }
 
             var unsavedOperationResults = _operationService.OperationResult.Where(x => x.IsLocalSaved == false).ToList();
-            _operationsRepository.SaveOperationResults(unsavedOperationResults);
+            _operationsRepositoryLocal.SaveOperationResults(unsavedOperationResults);
+            //_operationsRepositoryRemote.SaveOperationResults(unsavedOperationResults);
             foreach (var val in unsavedOperationResults)
             {
                 val.IsLocalSaved = true;

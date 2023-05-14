@@ -5,18 +5,21 @@
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <StackPanel>
-            <Label Content="{Binding SelectedOperation.Value.OperationId.Value}"/>
-            <Label Content="{Binding SelectedOperation.Value.WorkContentId.Value}"/>
-            <Label Content="{Binding SelectedOperation.Value.WorkContent.Value}"/>
-            <ListView Margin="10" Name="lvw" ItemsSource="{Binding Operations.Value}" SelectedItem="{Binding SelectedOperation.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+            <Label Content="{Binding SelectedOperationOrder.Value.OperationOrderId.Value}"/>
+            <Label Content="{Binding SelectedOperationOrder.Value.Contract.Value}"/>
+            <Label Content="{Binding SelectedOperationOrder.Value.WorkOrder.Value}"/>
+            <Label Content="{Binding SelectedOperationOrder.Value.SEG.Value}"/>
+            <Label Content="{Binding SelectedOperationOrder.Value.Stage.Value}"/>
+            <ListView Margin="10" Name="lvw" ItemsSource="{Binding OperationOrderDetails.Value}" SelectedItem="{Binding SelectedOperationOrderDetails.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="50" DisplayMemberBinding="{Binding IsDone}" Header="IsDone" />
-                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding OperationId.Value}" Header="OperationId" />
+                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding OperationOrderId.Value}" Header="OperationOrderId" />
+                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding OperationOrderDetailId.Value}" Header="OperationOrderDetailId" />
                         <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkContentId.Value}" Header="WorkContentId" />
                         <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkContent.Value}" Header="WorkContent" />
-                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding Contract.Value}" Header="Contract" />
-                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding WorkOrder.Value}" Header="WorkOrder" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding StandardWorkTimeSeconds}" Header="StandardWorkTimeSeconds" />
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding TargetWorkTimeSeconds}" Header="TargetWorkTimeSeconds" />
                     </GridView>
                 </ListView.View>
             </ListView>

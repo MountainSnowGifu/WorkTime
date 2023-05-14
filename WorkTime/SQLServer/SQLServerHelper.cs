@@ -15,7 +15,7 @@ namespace WorkTime.SQLServer
             //pass00000000
             var builder = new SqlConnectionStringBuilder();
             builder.DataSource = @"DESKTOP-8B0KCU1\SQLEXPRESS";
-            builder.InitialCatalog = "KGWS";
+            builder.InitialCatalog = "WorkTime";
             builder.IntegratedSecurity = true;
             ConnectionString = builder.ConnectionString;
         }

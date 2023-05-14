@@ -9,7 +9,8 @@ namespace WorkTime.WorkRecord.Service
 {
     public interface IOperationResult
     {
-        IOperation Operation { get; }
+        IOperationOrder Operation { get; }
+        IOperationOrderDetail OperationOrderDetail { get; }
         IWorkRecord WorkRecord { get; }
         IOperatingUser OperatingUser { get; }
         bool IsCompleted { get; }

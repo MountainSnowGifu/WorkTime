@@ -8,20 +8,18 @@ using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Service
 {
-    public interface IOperation : INotifyPropertyChanged
+    public interface IOperationOrderDetail : INotifyPropertyChanged
     {
-        OperationId OperationId { get; }
+        OperationOrderId RemotoOperationOrderId { get; }
+        OperationOrderDetailId RemotoOperationOrderDetailId { get; }
         WorkContentId WorkContentId { get; }
         WorkContent WorkContent { get; }
-        TimeSpan StandardWorkTimeSeconds { get; }
-        TimeSpan TargetWorkTimeSeconds { get; }
-        Contract Contract { get; }
-        WorkOrder WorkOrder { get; }
         SEG SEG { get; }
         Stage Stage { get; }
         SFX SFX { get; }
         Section Section { get; }
-        WorkerName WorkerName { get; }
+        TimeSpan StandardWorkTimeSeconds { get; }
+        TimeSpan TargetWorkTimeSeconds { get; }
         bool IsDone { get; set; }
     }
 }

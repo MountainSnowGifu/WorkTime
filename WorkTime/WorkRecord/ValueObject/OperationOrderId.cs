@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace WorkTime.WorkRecord.ValueObject
 {
-    public sealed class OperationId : ValueObject<OperationId>
+    public sealed class OperationOrderId : ValueObject<OperationOrderId>
     {
-        public OperationId(int value)
+        public OperationOrderId(int value)
         {
             Value = value;
         }
 
         public int Value { get; }
-        public string DisplayValue => "OperationId" + Value;
+        public string DisplayValue => "OperationOrderId" + Value;
 
-        protected override bool EqualsCore(OperationId other)
+        protected override bool EqualsCore(OperationOrderId other)
         {
             return this.Value == other.Value;
         }

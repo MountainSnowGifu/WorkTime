@@ -10,20 +10,22 @@ namespace WorkTime.WorkRecord.Entities
 {
     public sealed class TestOperationResult : IOperationResult
     {
-        public TestOperationResult(IOperation operation, IWorkRecord workRecord, IOperatingUser operatingUser, bool isCompleted, string differenceReason, bool isWaitingTime, string waitingTimeReason)
+        public TestOperationResult(IOperationOrder operation, IOperationOrderDetail operationOrderDetail, IWorkRecord workRecord, IOperatingUser operatingUser, bool isCompleted, DifferenceReason differenceReason, bool isWaitingTime, WaitingTimeReason waitingTimeReason)
         {
             Operation = operation;
+            OperationOrderDetail= operationOrderDetail;
             WorkRecord = workRecord;
             OperatingUser = operatingUser;
             IsCompleted = isCompleted;
             IsLocalSaved = false;
             IsRemoteSaved = false;
-            DifferenceReason = new DifferenceReason(differenceReason);
+            DifferenceReason = differenceReason;
             IsWaitingTime = isWaitingTime;
-            WaitingTimeReason = new WaitingTimeReason(waitingTimeReason);
+            WaitingTimeReason = waitingTimeReason;
         }
 
-        public IOperation Operation { get; }
+        public IOperationOrder Operation { get; }
+        public IOperationOrderDetail OperationOrderDetail { get; }
         public IWorkRecord WorkRecord { get; }
         public IOperatingUser OperatingUser { get; }
         public bool IsCompleted { get; }

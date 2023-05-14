@@ -9,8 +9,8 @@ namespace WorkTime.Repository
 {
     public interface IOperationsRepository
     {
-        List<IOperation> GetOperations();
-        void SaveOperations(List<IOperation> operations);
+        List<IOperationOrder> GetOperationOrders();
+        void SaveOperationOrders(IOperationOrder operationOrder);
         List<IOperationResult> GetOperationResults();
         void SaveOperationResults(List<IOperationResult> operationResults);
     }

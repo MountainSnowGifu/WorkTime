@@ -6,10 +6,11 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTime.WorkRecord.Entities;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.WorkRecord.Service
 {
-    public sealed class OperationService
+    public sealed class OperationService : IOperationService
     {
         private DateTime _workStartDateTime;
         private DateTime _workEndDateTime;
@@ -17,52 +18,55 @@ namespace WorkTime.WorkRecord.Service
         private DateTime _waitingEndDateTime;
         private IOperatingUser _operatingUser;
 
-        private List<IOperation> _operations;
+        private IOperationOrder _operationOrder;
+        private List<IOperationOrderDetail> _operationOrderDetails;
         private List<IOperationResult> _operationResults;
-        private IOperation _selectedOperation;
+        private IOperationOrderDetail _selectedOperationOrderDetail;
         private string _progressStatus;
-        private string _differenceReason;
+        private DifferenceReason _differenceReason;
         private bool _isWaiting;
 
-        public OperationService(List<IOperation> operations, IOperatingUser operatingUser)
+        public OperationService(IOperationOrder operationOrder, IOperatingUser operatingUser)
         {
-            _operations = operations;
+            _operationOrder = operationOrder;
+            _operationOrderDetails = operationOrder.OperationOrderDetails;
             _operatingUser = operatingUser;
-            _selectedOperation = _operations.FirstOrDefault();
+            _selectedOperationOrderDetail = _operationOrderDetails.FirstOrDefault();
             _operationResults = new List<IOperationResult>();
-            _differenceReason= string.Empty;
+            _differenceReason = new DifferenceReason(string.Empty);
             _isWaiting = false;
             ProgressStatusUpdate();
             OperationStart();
         }
 
-        public List<IOperation> Operations => _operations;
-        public IOperation SelectedOperation => _selectedOperation;
+        public IOperationOrder OperationOrder => _operationOrder;
+        public List<IOperationOrderDetail> OperationOrderDetails => _operationOrderDetails;
+        public IOperationOrderDetail SelectedOperationOrderDetail => _selectedOperationOrderDetail;
         public List<IOperationResult> OperationResult => _operationResults;
         public string ProgressStatus => _progressStatus;
 
         private void ProgressStatusUpdate()
         {
-            var operationsCount = _operations.Count;
-            var operationsDoneCount = _operations.Where(x=>x.IsDone).Count();
+            var operationsCount = _operationOrderDetails.Count;
+            var operationsDoneCount = _operationOrderDetails.Where(x => x.IsDone).Count();
             _progressStatus = operationsDoneCount + "/" + operationsCount;
         }
 
         private void OperationStart()
         {
-            if (SelectedOperation == null)
+            if (SelectedOperationOrderDetail == null)
             {
                 return;
             }
 
-            _differenceReason = string.Empty;
+            _differenceReason = new DifferenceReason(string.Empty);
             _workStartDateTime = DateTime.Now;
             _workEndDateTime = DateTime.MaxValue;
         }
 
         private void OperationStop()
         {
-            if (SelectedOperation == null)
+            if (SelectedOperationOrderDetail == null)
             {
                 return;
             }
@@ -82,12 +86,12 @@ namespace WorkTime.WorkRecord.Service
             _waitingEndDateTime = DateTime.MaxValue;
 
             OperationStop();
-            _selectedOperation.IsDone = false;
+            SelectedOperationOrderDetail.IsDone = false;
             var workRecord = new TestWorkRecord(_workStartDateTime, _workEndDateTime);
-            _operationResults.Add(new TestOperationResult(SelectedOperation, workRecord, _operatingUser, true, _differenceReason,false,string.Empty));
+            _operationResults.Add(new TestOperationResult(OperationOrder, SelectedOperationOrderDetail, workRecord, _operatingUser, true, _differenceReason, false, new WaitingTimeReason(string.Empty)));
         }
 
-        public void WaitingEnd(string waitingReason)
+        public void WaitingEnd(WaitingTimeReason waitingTimeReason)
         {
             if (!_isWaiting)
             {
@@ -96,14 +100,14 @@ namespace WorkTime.WorkRecord.Service
 
             _waitingEndDateTime = DateTime.Now;
             var waitRecord = new TestWorkRecord(_waitingStartDateTime, _waitingEndDateTime);
-            _operationResults.Add(new TestOperationResult(SelectedOperation, waitRecord, _operatingUser, true, _differenceReason, true, waitingReason));
+            _operationResults.Add(new TestOperationResult(OperationOrder, SelectedOperationOrderDetail, waitRecord, _operatingUser, true, _differenceReason, true, waitingTimeReason));
             _isWaiting = false;
             OperationStart();
         }
 
-        public void DifferenceReasonUpdate(string differenceReason)
+        public void DifferenceReasonUpdate(DifferenceReason differenceReason)
         {
-            _differenceReason= differenceReason;
+            _differenceReason = differenceReason;
         }
 
         public void OnCompletedNext()
@@ -114,10 +118,10 @@ namespace WorkTime.WorkRecord.Service
             }
 
             OperationStop();
-            _selectedOperation.IsDone = true;
+            SelectedOperationOrderDetail.IsDone = true;
             var workRecord = new TestWorkRecord(_workStartDateTime, _workEndDateTime);
-            _operationResults.Add(new TestOperationResult(SelectedOperation, workRecord, _operatingUser, true, _differenceReason,false, string.Empty));
-            _selectedOperation = Operations.SkipWhile(x => x != SelectedOperation).Skip(1).FirstOrDefault();
+            _operationResults.Add(new TestOperationResult(OperationOrder, SelectedOperationOrderDetail, workRecord, _operatingUser, true, _differenceReason, false, new WaitingTimeReason(string.Empty)));
+            _selectedOperationOrderDetail = _operationOrderDetails.SkipWhile(x => x != SelectedOperationOrderDetail).Skip(1).FirstOrDefault();
             ProgressStatusUpdate();
             OperationStart();
         }
@@ -130,13 +134,12 @@ namespace WorkTime.WorkRecord.Service
             }
 
             OperationStop();
-            _selectedOperation.IsDone = false;
+            SelectedOperationOrderDetail.IsDone = false;
             var workRecord = new TestWorkRecord(_workStartDateTime, _workEndDateTime);
-            _operationResults.Add(new TestOperationResult(SelectedOperation, workRecord, _operatingUser, false, _differenceReason,false, string.Empty));
-            _selectedOperation = Operations.SkipWhile(x => x != SelectedOperation).Skip(1).FirstOrDefault();
+            _operationResults.Add(new TestOperationResult(OperationOrder, SelectedOperationOrderDetail, workRecord, _operatingUser, false, _differenceReason, false, new WaitingTimeReason(string.Empty)));
+            _selectedOperationOrderDetail = _operationOrderDetails.SkipWhile(x => x != SelectedOperationOrderDetail).Skip(1).FirstOrDefault();
             ProgressStatusUpdate();
             OperationStart();
         }
-
     }
 }
