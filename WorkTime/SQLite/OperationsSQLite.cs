@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WorkTime.Repository;
 using WorkTime.WorkRecord.Entities;
 using WorkTime.WorkRecord.Service;
+using WorkTime.WorkRecord.ValueObject;
 
 namespace WorkTime.SQLite
 {
@@ -43,11 +44,12 @@ from
                                             parameters.ToArray(),
                                             reader =>
                                             {
-                                                list.Add(new TestOperationOrder(Convert.ToInt32(reader["remote_operation_order_id"]),
+                                                var remoteOperationOrderId = Convert.ToInt32(reader["remote_operation_order_id"]);
+                                                list.Add(new TestOperationOrder(remoteOperationOrderId,
                                                                                                 Convert.ToString(reader["contract"]),
                                                                                                 Convert.ToString(reader["work_order"]),
                                                                                                 Convert.ToString(reader["worker_name"]),
-                                                                                                null,
+                                                                                                GetOperationOrderDetails(remoteOperationOrderId),
                                                                                                 Convert.ToInt32(reader["affiliation_code"]),
                                                                                                 Convert.ToDateTime(reader["scheduled_workdate"]),
                                                                                                 Convert.ToBoolean(reader["is_responsible_calling"]),
@@ -60,6 +62,60 @@ from
                                                                                                 Convert.ToBoolean(reader["is_done"])));
                                             });
 
+            return list;
+        }
+
+        private List<IOperationOrderDetail> GetOperationOrderDetails(int remoteOperationOrderId)
+        {
+            var sql = @"
+select
+    LOCAL_OPERATION_ORDER_DETAILS.[remote_operation_order_detail_id],
+    LOCAL_OPERATION_ORDER_DETAILS.[remote_operation_order_id],
+    LOCAL_OPERATION_ORDER_DETAILS.[work_content_id],
+    LOCAL_OPERATION_ORDER_DETAILS.[work_content],
+    LOCAL_OPERATION_ORDER_DETAILS.[seg],
+    LOCAL_OPERATION_ORDER_DETAILS.[stage],
+    LOCAL_OPERATION_ORDER_DETAILS.[sfx],
+    LOCAL_OPERATION_ORDER_DETAILS.[section],
+    LOCAL_OPERATION_ORDER_DETAILS.[important_points],
+    LOCAL_OPERATION_ORDER_DETAILS.[important_points_image],
+    LOCAL_OPERATION_ORDER_DETAILS.[sqk_index],
+    LOCAL_OPERATION_ORDER_DETAILS.[gen_unit],
+    LOCAL_OPERATION_ORDER_DETAILS.[standard_worktime_seconds],
+    LOCAL_OPERATION_ORDER_DETAILS.[target_worktime_seconds],
+    LOCAL_OPERATION_ORDER_DETAILS.[is_done],
+    LOCAL_OPERATION_ORDER_DETAILS.[can_skip],
+    LOCAL_OPERATION_ORDER_DETAILS.[is_skip]
+from
+    LOCAL_OPERATION_ORDER_DETAILS
+";
+            var parameters = new List<SQLiteParameter>();
+            parameters.Add(new SQLiteParameter("@remote_operation_order_id", remoteOperationOrderId));
+
+            var list = new List<IOperationOrderDetail>();
+            SQLiteHelper.Query(
+                                sql,
+                                parameters.ToArray(),
+                                reader =>
+                                {
+                                    list.Add(new TestOperationOrderDetail(Convert.ToInt32(reader["remote_operation_order_detail_id"]),
+                                                                                            Convert.ToInt32(reader["remote_operation_order_id"]),
+                                                                                            Convert.ToString(reader["work_content_id"]),
+                                                                                            Convert.ToString(reader["work_content"]),
+                                                                                            Convert.ToString(reader["seg"]),
+                                                                                            Convert.ToString(reader["stage"]),
+                                                                                            Convert.ToString(reader["sfx"]),
+                                                                                            Convert.ToString(reader["section"]),
+                                                                                            Convert.ToString(reader["important_points"]),
+                                                                                            Convert.ToString(reader["important_points_image"]),
+                                                                                            Convert.ToString(reader["sqk_index"]),
+                                                                                            Convert.ToString(reader["gen_unit"]),
+                                                                                            new TimeSpan(0, 0, 0, Convert.ToInt32(reader["standard_worktime_seconds"])),
+                                                                                            new TimeSpan(0, 0, 0, Convert.ToInt32(reader["target_worktime_seconds"])),
+                                                                                            Convert.ToBoolean(reader["is_done"]),
+                                                                                            Convert.ToBoolean(reader["can_skip"]),
+                                                                                            Convert.ToBoolean(reader["is_skip"])));
+                                });
             return list;
         }
 
@@ -240,7 +296,7 @@ set
                 parameters.Add(new SQLiteParameter("@gen_unit", val.GenUnit.Value));
 
                 SQLiteHelper.Execute(sql, parameters.ToArray());
-            }   
+            }
         }
 
         public List<IOperationResult> GetOperationResults()

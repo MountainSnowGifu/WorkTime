@@ -14,6 +14,7 @@ namespace WorkTime.WorkRecord.Service
         OperationOrderDetailId RemotoOperationOrderDetailId { get; }
         WorkContentId WorkContentId { get; }
         WorkContent WorkContent { get; }
+        WorkContentReadAloud WorkContentReadAloud { get; }//読み上げ
         ImportantPoints ImportantPoints { get; }
         ImportantPointsImage ImportantPointsImage { get; }
         SEG SEG { get; }

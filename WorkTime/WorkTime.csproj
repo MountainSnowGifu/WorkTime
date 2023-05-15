@@ -108,6 +108,7 @@
     <Compile Include="WorkRecord\ValueObject\WaitingTimeReason.cs" />
     <Compile Include="WorkRecord\ValueObject\WorkContent.cs" />
     <Compile Include="WorkRecord\ValueObject\WorkContentId.cs" />
+    <Compile Include="WorkRecord\ValueObject\WorkContentReadAloud.cs" />
     <Compile Include="WorkRecord\ValueObject\WorkEndDateTime.cs" />
     <Compile Include="WorkRecord\ValueObject\WorkerName.cs" />
     <Compile Include="WorkRecord\ValueObject\WorkOrder.cs" />

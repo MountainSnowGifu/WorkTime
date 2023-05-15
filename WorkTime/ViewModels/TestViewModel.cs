@@ -133,8 +133,8 @@ CREATE TABLE IF NOT EXISTS
     ,stage TEXT
     ,sfx TEXT
     ,section TEXT
-    ,standard_worktime_seconds TEXT
-    ,target_worktime_seconds TEXT
+    ,standard_worktime_seconds INTEGER
+    ,target_worktime_seconds INTEGER
     ,important_points TEXT
     ,important_points_image TEXT
     ,sqk_index TEXT
